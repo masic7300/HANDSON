@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <title>AI 손금검사</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+    <a href="/index.html">
+        <h3 class="pb-1 pl-2 pt-3 mb-0 bg-light" style="font-weight: bold; color: #35465d;">HANDSON</h3>
+    </a>
+    <ul class="pt-2 nav nav-tabs bg-light">
+        <li class="nav-item">
+            <a class="nav-link" href="/intro.html" style="color: gray">INTRO</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" style="color: gray" href="/index.html">손금 직업검사</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" style="font-weight: bold" href="/wind.html">손금 <span style="color:cornflowerblue; font-style: italic">바람끼</span> 검사</a>
+        </li>
+    </ul>
+    <section class="section">
+        <h1 class="title">손금 <span style="color:cornflowerblue; font-size: 3.2rem; font-style: italic">바람끼</span> 검사</h1>
+        <h2 class="subtitle">손금으로 <span style="color:cornflowerblue; font-style: italic">바람끼</span> 확인하기</h2>
+    </section>
+    <div class="pb-5"></div>
+    <h4 class="pb-2 d-flex justify-content-center">오른손 또는 왼손을 선택하세요</h4>
+    <section class="d-flex justify-content-center">
+        <img src="img/left.png" height="40px">
+        <p class="d-flex align-items-center pr-3">왼손(30세 미만)</p>
+        <div>
+            <input type="checkbox" id="gender">
+            <label for="gender">
+                <span class="knob">
+                    <i></i>
+                </span>
+            </label>
+        </div>
+        <p class="d-flex align-items-center pl-3">오른손(30세 이상)</p>
+        <img src="img/right.png" height="40px">
+    </section>
+    <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <div class="mt-3 container file-upload">
+        <div class="image-upload-wrap">
+            <input class="file-upload-input" type='file' onchange="readURL(this);" accept="image/*" />
+            <div class="drag-text">
+                <img src="img/upload.svg" class="mt-5 mb-4 upload">
+                <div class="pb-1 upload-text">손 전체가 잘보이도록 업로드 해주세요.</div>
+                <div class="pb-3 upload-text">사진은 저장되지 않습니다.</div>
+            </div>
+        </div>
+        <div class="file-upload-content">
+            <img class="file-upload-image" id="face-image" src="#" alt="your image" />
+            <div id="loading" class="animated bounce">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <p class="text-center">AI가 손금을 분석중입니다.</p>
+            </div>
+            <p class="result-message"></p>
+            <div id="label-container" class="d-flex flex-column justify-content-around"></div>
+            <div class="pt-3 image-title-wrap">
+                <button type="button p-2" class="try-again-btn" onclick="window.location.reload();">
+                    <span class="try-again-text">다른 사진으로 재시도</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="ad-banner">
+        <ins class="kakao_ad_area" style="display:none;" 
+ data-ad-unit    = "DAN-t4qmwcbkz4v9" 
+ data-ad-width   = "320" 
+ data-ad-height  = "100"></ins> 
+<script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
+    </div>
+    <footer class="footer pt-5 container d-flex justify-content-center">
+        <div>
+            <p class="mb-1">&copy; 2020. OSW All Rights Reserved.</p>
+            <p class="d-flex justify-content-center"><a  style="color: black" href="/privacy.html">privacy</a></p>
+        </div>
+    </footer>
+    <script>
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('.image-upload-wrap').hide();
+                    $('#loading').show();
+                    $('.file-upload-image').attr('src', e.target.result);
+                    $('.file-upload-content').show();
+                    $('.image-title').html(input.files[0].name);
+                };
+                reader.readAsDataURL(input.files[0]);
+                init().then(function() {
+                    predict();
+                    $('#loading').hide();
+                });
+            } else {
+                removeUpload();
+            }
+        }
+
+        function removeUpload() {
+            $('.file-upload-input').replaceWith($('.file-upload-input').clone());
+            $('.file-upload-content').hide();
+            $('.image-upload-wrap').show();
+        }
+        $('.image-upload-wrap').bind('dragover', function() {
+            $('.image-upload-wrap').addClass('image-dropping');
+        });
+        $('.image-upload-wrap').bind('dragleave', function() {
+            $('.image-upload-wrap').removeClass('image-dropping');
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
+    <script type="text/javascript">
+        let URL;
+        const urlright = "https://teachablemachine.withgoogle.com/models/45lL_uKdH/";
+        const urlleft = "https://teachablemachine.withgoogle.com/models/ulHKu7Ho7/";
+        let model, webcam, labelContainer, maxPredictions;
+        async function init() {
+            if (document.getElementById("gender").checked) {
+                URL = urlright;
+            } else {
+                URL = urlleft;
+            }
+            const modelURL = URL + "model.json";
+            const metadataURL = URL + "metadata.json";
+            model = await tmImage.load(modelURL, metadataURL);
+            maxPredictions = model.getTotalClasses();
+            labelContainer = document.getElementById("label-container");
+            for (let i = 0; i < maxPredictions; i++) {
+                var element = document.createElement("div")
+                element.classList.add("d-flex");
+                labelContainer.appendChild(element);
+            }
+        }
+        async function predict() {
+            var image = document.getElementById("face-image")
+            const prediction = await model.predict(image, false);
+            prediction.sort((a, b) => parseFloat(b.probability) - parseFloat(a.probability));
+            var resultTitle, resultExplain;
+            if (document.getElementById("gender").checked) {
+                switch (prediction[0].className) {
+                    case "wind":
+                        resultTitle = "바람둥이"
+                        resultExplain = "분노의 김치 싸다구를 배송받고 싶지 않다면<br>인연을 소중하게 생각하세요!!"
+                        break;
+                    case "dan":
+                        resultTitle = "일편단심"
+                        resultExplain = "나 보기가 역겨워 가실 때에는...<br>말없이 허리접어 드리오리다!!"
+                        break;
+                    default:
+                        resultTitle = "알수없음"
+                        resultExplain = ""
+                }
+            } else {
+                switch (prediction[0].className) {
+                    case "wind":
+                        resultTitle = "바람둥이"
+                        resultExplain = "다양한 끼와 재능을 가지고 있네요<br>길가다 돌 맞는 일은 만들지 말아요!!"
+                        break;
+                    case "dan":
+                        resultTitle = "일편단심"
+                        resultExplain = "죽음이 우리를 갈라놓을때까지!!<br>너와 함께 있을꺼야!!"
+                        break;
+                    default:
+                        resultTitle = "알수없음"
+                        resultExplain = ""
+                }
+            }
+            var title = "<div class='" + prediction[0].className + "-son-title'>" + resultTitle + "</div>"
+            var explain = "<div class='son-explain pt-2'>" + resultExplain + "</div>"
+            var celeb = "<div class='" + prediction[0].className + "-son-celeb pt-2 pb-2'></div>"
+            $('.result-message').html(title + explain + celeb);
+            var barWidth;
+            for (let i = 0; i < maxPredictions; i++) {
+                if (prediction[i].probability.toFixed(2) > 0.1) {
+                    barWidth = Math.round(prediction[i].probability.toFixed(2) * 100) + "%";
+                } else if (prediction[i].probability.toFixed(2) >= 0.01) {
+                    barWidth = "4%"
+                } else {
+                    barWidth = "2%"
+                }
+                var labelTitle;
+                switch (prediction[i].className) {
+                    case "wind":
+                        labelTitle = "바람둥이"
+                        break;
+                    case "dan":
+                        labelTitle = "일편단심"
+                        break;
+                    default:
+                        labelTitle = "알수없음"
+                }
+                var label = "<div class='son-label d-flex align-items-center'>" + labelTitle + "</div>"
+                var bar = "<div class='bar-container position-relative container'><div class='" + prediction[i].className + "-box'></div><div class='d-flex justify-content-center align-items-center " + prediction[i].className + "-bar' style='width: " + barWidth + "'><span class='d-block percent-text'>" + Math.round(prediction[i].probability.toFixed(2) * 100) + "%</span></div></div>"
+                labelContainer.childNodes[i].innerHTML = label + bar;
+            }
+        }
+    </script>
+</body>
+<!-- 
+image input box
+Copyright (c) 2020 by Aaron Vanston (https://codepen.io/aaronvanston/pen/yNYOXR)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+gender toggle
+Copyright (c) 2020 by Mert Cukuren (https://codepen.io/knyttneve/pen/bPpEZY)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ -->
+
+<!--
+Hand, hand Free Icon
+© 2020 icon-icons.com · Made in Menorca (Spain) (https://icon-icons.com/)
+By: VisualPharm
+License : CC Atribution
+Some icons have been changed
+--></html>
